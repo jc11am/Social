@@ -9,8 +9,11 @@ const morgan = require ("morgan");
 const path = require ("path");
 const { fileURLToPath } =  require ("url");
 const { register } = require("./controllers/auth")
+const { createPost } = require("./controllers/post")
 const authRouter = require("./routes/routes")
 const userRoutes = require("./routes/userRoutes")
+const postRoutes = require("./routes/postRoutes");
+const authUser = require("./middleware/auth");
 
 //middleware
 dotenv.config();
@@ -37,8 +40,11 @@ const upload = multer({ storage })
 
 //routes
 app.post("/api/register", upload.single("picture"), register)
+app.post("/post", authUser, upload.single("picture"), createPost)
+
 app.use("/api", authRouter)
 app.use("/users", userRoutes)
+app.use("/posts", postRoutes)
 
 const PORT = process.env.Port
 
